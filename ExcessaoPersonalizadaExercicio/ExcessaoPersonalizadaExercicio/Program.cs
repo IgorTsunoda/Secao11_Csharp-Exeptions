@@ -1,4 +1,5 @@
 ﻿using ExcessaoPersonalizadaExercicio.Entities;
+using ExcessaoPersonalizadaExercicio.Entities.Exceptions;
 
 namespace ExcessaoPersonalizadaExercicio
 {
@@ -6,43 +7,40 @@ namespace ExcessaoPersonalizadaExercicio
     {
         static void Main(string[] args)
         {
-            Console.Write("Room Number: ");
-            int roomNumber = int.Parse(Console.ReadLine());
-            Console.Write("Check-in date (dd/MM/yyyy): ");
-            DateTime checkin = DateTime.Parse(Console.ReadLine());
-            Console.Write("Check-out date (dd/MM/yyyy): ");
-            DateTime checkout = DateTime.Parse(Console.ReadLine());
+            try
+            {
+                Console.Write("Room number: ");
+                int number = int.Parse(Console.ReadLine());
+                Console.Write("Check-in date (dd/MM/yyyy): ");
+                DateTime checkIn = DateTime.Parse(Console.ReadLine());
+                Console.Write("Check-out date (dd/MM/yyyy): ");
+                DateTime checkOut = DateTime.Parse(Console.ReadLine());
 
-            if (checkout <= checkin)
-            {
-                Console.WriteLine("Error in reservation: Check-out data must be after check-in date.");
-            }
-            else
-            {
-                Reservation reservation = new Reservation(roomNumber, checkin, checkout);
-                Console.WriteLine(reservation);
-            }
+                Reservation reservation = new Reservation(number, checkIn, checkOut);
+                Console.WriteLine("Reservation: " + reservation);
 
-            Console.WriteLine("Enter data to update the reservation:");
-            Console.Write("Check-in date (dd/MM/yyyy): ");
-            checkin = DateTime.Parse(Console.ReadLine());
-            Console.Write("Check-out date (dd/MM/yyyy): ");
-            checkout = DateTime.Parse(Console.ReadLine());
+                Console.WriteLine();
+                Console.WriteLine("Enter data to update the reservation:");
+                Console.Write("Check-in date (dd/MM/yyyy): ");
+                checkIn = DateTime.Parse(Console.ReadLine());
+                Console.Write("Check-out date (dd/MM/yyyy): ");
+                checkOut = DateTime.Parse(Console.ReadLine());
 
-            if (checkin <= DateTime.Now || checkout <= DateTime.Now)
-            {
-                Console.WriteLine("Error in reservation: Reservation dates for update must be furture dates.");
+                reservation.UpdateDates(checkIn, checkOut);
+                Console.WriteLine("Reservation: " + reservation);
             }
-            
-            if (checkout <= checkin)
+            catch (FormatException e)
             {
-                Console.WriteLine("Error in reservation: Check-out data must be after check-in date.");
+                Console.WriteLine("Error in format: " + e.Message);
             }
-            else
+            catch (DomainException e)
             {
-                reservation.Update()
+                Console.WriteLine("Error in reservation: " + e.Message);
             }
-
+            catch (Exception e)
+            {
+                Console.WriteLine("Unexpected error: " + e.Message);
+            }
         }
     }
 }
